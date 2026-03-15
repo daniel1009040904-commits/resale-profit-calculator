@@ -87,7 +87,30 @@ onChange={e=>setShipping(+e.target.value)}
 
 </div>
 
-</main>
+<div className="flex gap-3 mt-6">
 
+<button
+className="bg-slate-800 px-4 py-2 rounded"
+onClick={()=>{
+navigator.clipboard.writeText(
+`순수익: ${Math.round(profit)}원 / 마진율: ${margin}%`
 )
-}
+}}
+>
+결과 복사
+</button>
+
+<button
+className="bg-cyan-500 text-black px-4 py-2 rounded"
+onClick={()=>{
+navigator.share({
+title:"중고거래 순수익 계산",
+text:`순수익 ${Math.round(profit)}원`,
+url:window.location.href
+})
+}}
+>
+공유
+</button>
+
+</div>
