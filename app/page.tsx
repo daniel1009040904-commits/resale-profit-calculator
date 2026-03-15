@@ -1,221 +1,265 @@
-"use client";
+"use client"
 
-import { useEffect, useState } from "react";
+import { useState,useEffect } from "react"
 
-function formatNumber(value: number) {
-  return new Intl.NumberFormat("ko-KR").format(value);
+function addComma(value:string){
+
+const cleaned=value.replace(/,/g,"")
+
+if(cleaned==="") return ""
+
+if(isNaN(Number(cleaned))) return value
+
+return Number(cleaned).toLocaleString("ko-KR")
+
 }
 
-function removeComma(v: string) {
-  return v.replace(/,/g, "");
+function removeComma(v:string){
+return v.replace(/,/g,"")
 }
 
-function addComma(v: string) {
-  const num = removeComma(v);
-  if (!num) return "";
-  return formatNumber(Number(num));
+function isNumber(v:string){
+return !isNaN(Number(removeComma(v)))
 }
 
-export default function Page() {
+function format(n:number){
+return new Intl.NumberFormat("ko-KR").format(n)
+}
 
-  const [memo,setMemo]=useState("")
+export default function Page(){
 
-  const [buy,setBuy]=useState("")
-  const [sell,setSell]=useState("")
-  const [shipping,setShipping]=useState("")
-  const [etc,setEtc]=useState("")
+const [memo,setMemo]=useState("")
 
-  const [feeType,setFeeType]=useState("percent")
-  const [platform,setPlatform]=useState("")
+const [buy,setBuy]=useState("")
+const [sell,setSell]=useState("")
+const [shipping,setShipping]=useState("")
+const [etc,setEtc]=useState("")
+const [platform,setPlatform]=useState("")
 
-  const [history,setHistory]=useState<any[]>([])
+const [feeType,setFeeType]=useState("percent")
 
-  useEffect(()=>{
-    const saved=localStorage.getItem("profit-history")
-    if(saved){
-      setHistory(JSON.parse(saved))
-    }
-  },[])
+const [history,setHistory]=useState<any[]>([])
 
-  useEffect(()=>{
-    localStorage.setItem("profit-history",JSON.stringify(history))
-  },[history])
+useEffect(()=>{
 
-  function calculate(){
+const saved=localStorage.getItem("profit-history")
 
-    const buyPrice=Number(removeComma(buy)||0)
-    const sellPrice=Number(removeComma(sell)||0)
-    const shippingFee=Number(removeComma(shipping)||0)
-    const etcCost=Number(removeComma(etc)||0)
+if(saved){
+setHistory(JSON.parse(saved))
+}
 
-    let fee=Number(removeComma(platform)||0)
+},[])
 
-    if(feeType==="percent"){
-      fee=Math.floor((sellPrice*fee)/100)
-    }
+useEffect(()=>{
+localStorage.setItem("profit-history",JSON.stringify(history))
+},[history])
 
-    const totalCost=buyPrice+shippingFee+etcCost+fee
-    const profit=sellPrice-totalCost
-    const margin=buyPrice>0?(profit/buyPrice)*100:0
+function calculate(){
 
-    const item={
-      id:Date.now(),
-      memo,
-      buyPrice,
-      sellPrice,
-      totalCost,
-      profit,
-      margin
-    }
+if(
+!isNumber(buy)||
+!isNumber(sell)||
+!isNumber(shipping)||
+!isNumber(etc)||
+!isNumber(platform)
+){
 
-    setHistory([item,...history])
+alert("숫자가 아닌 값이 포함되었습니다")
 
-  }
+return
 
-  function downloadExcel(){
+}
 
-    const header=["메모","구매가","판매가","총비용","순이익","수익률"]
+const buyPrice=Number(removeComma(buy))
+const sellPrice=Number(removeComma(sell))
+const shippingFee=Number(removeComma(shipping))
+const etcCost=Number(removeComma(etc))
 
-    const rows=history.map(h=>[
-      h.memo,
-      h.buyPrice,
-      h.sellPrice,
-      h.totalCost,
-      h.profit,
-      h.margin.toFixed(2)
-    ])
+let fee=Number(removeComma(platform))
 
-    const csv=[header,...rows].map(r=>r.join(",")).join("\n")
+if(feeType==="percent"){
+fee=Math.floor((sellPrice*fee)/100)
+}
 
-    const blob=new Blob(["\ufeff"+csv],{type:"text/csv"})
+const totalCost=buyPrice+shippingFee+etcCost+fee
 
-    const url=URL.createObjectURL(blob)
+const profit=sellPrice-totalCost
 
-    const a=document.createElement("a")
+const margin=buyPrice>0?(profit/buyPrice)*100:0
 
-    a.href=url
-    a.download="수익기록-엑셀.csv"
-    a.click()
+const item={
 
-  }
+id:Date.now(),
 
-  return(
+memo,
 
-    <main className="page">
+buyPrice,
 
-      <h1>중고거래 수익 계산기</h1>
+sellPrice,
 
-      <div className="card">
+totalCost,
 
-        <input
-        placeholder="상품 메모"
-        value={memo}
-        onChange={e=>setMemo(e.target.value)}
-        />
+profit,
 
-        <input
-        placeholder="구매가"
-        value={buy}
-        onChange={e=>setBuy(addComma(e.target.value))}
-        />
+margin
 
-        <input
-        placeholder="판매가"
-        value={sell}
-        onChange={e=>setSell(addComma(e.target.value))}
-        />
+}
 
-        <input
-        placeholder="택배비"
-        value={shipping}
-        onChange={e=>setShipping(addComma(e.target.value))}
-        />
+setHistory([item,...history])
 
-        <div className="feeBox">
+}
 
-          <select
-          value={feeType}
-          onChange={e=>setFeeType(e.target.value)}
-          >
+function downloadExcel(){
 
-            <option value="percent">
-              수수료 %
-            </option>
+const header=["메모","구매가","판매가","총비용","순이익","수익률"]
 
-            <option value="won">
-              수수료 원
-            </option>
+const rows=history.map(h=>[
+h.memo,
+h.buyPrice,
+h.sellPrice,
+h.totalCost,
+h.profit,
+h.margin.toFixed(2)
+])
 
-          </select>
+const csv=[header,...rows].map(r=>r.join(",")).join("\n")
 
-          <input
-          placeholder="플랫폼 수수료"
-          value={platform}
-          onChange={e=>setPlatform(addComma(e.target.value))}
-          />
+const blob=new Blob(["\ufeff"+csv],{type:"text/csv"})
 
-        </div>
+const url=URL.createObjectURL(blob)
 
-        <input
-        placeholder="기타 비용"
-        value={etc}
-        onChange={e=>setEtc(addComma(e.target.value))}
-        />
+const a=document.createElement("a")
 
-        <button onClick={calculate}>
-          계산하고 저장
-        </button>
+a.href=url
 
-      </div>
+a.download="수익기록-엑셀.csv"
 
-      <div className="card">
+a.click()
 
-        <button onClick={downloadExcel}>
-          엑셀 다운로드
-        </button>
+}
 
-      </div>
+return(
 
-      <div className="card">
+<main className="page">
 
-        <table>
+<h1>중고거래 수익 계산기</h1>
 
-          <thead>
+<div className="card">
 
-            <tr>
-              <th>메모</th>
-              <th>구매가</th>
-              <th>판매가</th>
-              <th>총비용</th>
-              <th>순이익</th>
-              <th>수익률</th>
-            </tr>
+<input
+placeholder="상품 메모"
+value={memo}
+onChange={e=>setMemo(e.target.value)}
+/>
 
-          </thead>
+<input
+placeholder="구매가"
+value={buy}
+onChange={e=>setBuy(addComma(e.target.value))}
+/>
 
-          <tbody>
+<input
+placeholder="판매가"
+value={sell}
+onChange={e=>setSell(addComma(e.target.value))}
+/>
 
-            {history.map(item=>(
-              <tr key={item.id}>
+<input
+placeholder="택배비"
+value={shipping}
+onChange={e=>setShipping(addComma(e.target.value))}
+/>
 
-                <td>{item.memo}</td>
-                <td>{formatNumber(item.buyPrice)}</td>
-                <td>{formatNumber(item.sellPrice)}</td>
-                <td>{formatNumber(item.totalCost)}</td>
-                <td>{formatNumber(item.profit)}</td>
-                <td>{item.margin.toFixed(2)}%</td>
+<div className="feeBox">
 
-              </tr>
-            ))}
+<select
+value={feeType}
+onChange={e=>setFeeType(e.target.value)}
+>
 
-          </tbody>
+<option value="percent">
+수수료 %
+</option>
 
-        </table>
+<option value="won">
+수수료 원
+</option>
 
-      </div>
+</select>
 
-    </main>
+<input
+placeholder="플랫폼 수수료"
+value={platform}
+onChange={e=>setPlatform(addComma(e.target.value))}
+/>
 
-  )
+</div>
+
+<input
+placeholder="기타 비용"
+value={etc}
+onChange={e=>setEtc(addComma(e.target.value))}
+/>
+
+<button onClick={calculate}>
+계산하고 저장
+</button>
+
+</div>
+
+<div className="card">
+
+<button onClick={downloadExcel}>
+엑셀 다운로드
+</button>
+
+</div>
+
+<div className="card">
+
+<table>
+
+<thead>
+
+<tr>
+<th>메모</th>
+<th>구매가</th>
+<th>판매가</th>
+<th>총비용</th>
+<th>순이익</th>
+<th>수익률</th>
+</tr>
+
+</thead>
+
+<tbody>
+
+{history.map(item=>(
+<tr key={item.id}>
+
+<td>{item.memo}</td>
+
+<td>{format(item.buyPrice)}</td>
+
+<td>{format(item.sellPrice)}</td>
+
+<td>{format(item.totalCost)}</td>
+
+<td>{format(item.profit)}</td>
+
+<td>{item.margin.toFixed(2)}%</td>
+
+</tr>
+))}
+
+</tbody>
+
+</table>
+
+</div>
+
+</main>
+
+)
 
 }
