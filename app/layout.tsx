@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import Script from "next/script";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -16,8 +15,13 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "중고거래 수익 계산기",
   description: "중고거래, 마진, ROI, 손익분기 계산기",
+
   verification: {
     google: "yPSQW2oDKqsSyPJ8LEBczTxH",
+  },
+
+  other: {
+    "google-adsense-account": "ca-pub-2379721968959562",
   },
 };
 
@@ -31,16 +35,7 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-
-        <Script
-          async
-          strategy="afterInteractive"
-          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2379721968959562"
-          crossOrigin="anonymous"
-        />
-
         {children}
-
       </body>
     </html>
   );
