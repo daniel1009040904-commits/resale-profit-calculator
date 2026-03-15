@@ -55,10 +55,22 @@ margin-top:10px;
 cursor:pointer;
 }
 
+.liveToggle{
+display:flex;
+align-items:center;
+gap:10px;
+margin-bottom:14px;
+}
+
 .feeBox{
 display:flex;
 gap:10px;
 margin-bottom:12px;
+}
+
+.result p{
+font-size:18px;
+margin:6px 0;
 }
 
 table{

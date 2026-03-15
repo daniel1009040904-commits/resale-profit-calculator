@@ -30,6 +30,9 @@ export default function Page(){
 
 const [memo,setMemo]=useState("")
 
+const [buyDate,setBuyDate]=useState("")
+const [sellDate,setSellDate]=useState("")
+
 const [buy,setBuy]=useState("")
 const [sell,setSell]=useState("")
 const [shipping,setShipping]=useState("")
@@ -39,6 +42,10 @@ const [platform,setPlatform]=useState("")
 const [feeType,setFeeType]=useState("percent")
 
 const [history,setHistory]=useState<any[]>([])
+
+const [live,setLive]=useState(true)
+
+const [result,setResult]=useState<any>(null)
 
 useEffect(()=>{
 
@@ -54,7 +61,7 @@ useEffect(()=>{
 localStorage.setItem("profit-history",JSON.stringify(history))
 },[history])
 
-function calculate(){
+function calculateCore(){
 
 if(
 !isNumber(buy)||
@@ -63,11 +70,7 @@ if(
 !isNumber(etc)||
 !isNumber(platform)
 ){
-
-alert("숫자가 아닌 값이 포함되었습니다")
-
-return
-
+return null
 }
 
 const buyPrice=Number(removeComma(buy))
@@ -87,34 +90,75 @@ const profit=sellPrice-totalCost
 
 const margin=buyPrice>0?(profit/buyPrice)*100:0
 
+return{
+buyPrice,
+sellPrice,
+totalCost,
+profit,
+margin
+}
+
+}
+
+useEffect(()=>{
+
+if(!live) return
+
+const r=calculateCore()
+
+setResult(r)
+
+},[buy,sell,shipping,etc,platform,feeType,live])
+
+function calculate(){
+
+const r=calculateCore()
+
+if(!r){
+
+alert("숫자가 아닌 값이 포함되었습니다")
+
+return
+
+}
+
 const item={
 
 id:Date.now(),
 
 memo,
 
-buyPrice,
+buyDate,
 
-sellPrice,
+sellDate,
 
-totalCost,
-
-profit,
-
-margin
+...r
 
 }
 
 setHistory([item,...history])
 
+setResult(r)
+
 }
 
 function downloadExcel(){
 
-const header=["메모","구매가","판매가","총비용","순이익","수익률"]
+const header=[
+"메모",
+"구입날짜",
+"판매날짜",
+"구매가",
+"판매가",
+"총비용",
+"순이익",
+"수익률"
+]
 
 const rows=history.map(h=>[
 h.memo,
+h.buyDate,
+h.sellDate,
 h.buyPrice,
 h.sellPrice,
 h.totalCost,
@@ -146,10 +190,34 @@ return(
 
 <div className="card">
 
+<label className="liveToggle">
+
+<input
+type="checkbox"
+checked={live}
+onChange={()=>setLive(!live)}
+/>
+
+실시간 계산
+
+</label>
+
 <input
 placeholder="상품 메모"
 value={memo}
 onChange={e=>setMemo(e.target.value)}
+/>
+
+<input
+type="date"
+value={buyDate}
+onChange={e=>setBuyDate(e.target.value)}
+/>
+
+<input
+type="date"
+value={sellDate}
+onChange={e=>setSellDate(e.target.value)}
 />
 
 <input
@@ -207,6 +275,22 @@ onChange={e=>setEtc(addComma(e.target.value))}
 
 </div>
 
+{result && (
+
+<div className="card result">
+
+<h2>계산 결과</h2>
+
+<p>순이익 : {format(result.profit)} 원</p>
+
+<p>수익률 : {result.margin.toFixed(2)} %</p>
+
+<p>총비용 : {format(result.totalCost)} 원</p>
+
+</div>
+
+)}
+
 <div className="card">
 
 <button onClick={downloadExcel}>
@@ -223,6 +307,8 @@ onChange={e=>setEtc(addComma(e.target.value))}
 
 <tr>
 <th>메모</th>
+<th>구입날짜</th>
+<th>판매날짜</th>
 <th>구매가</th>
 <th>판매가</th>
 <th>총비용</th>
@@ -238,6 +324,10 @@ onChange={e=>setEtc(addComma(e.target.value))}
 <tr key={item.id}>
 
 <td>{item.memo}</td>
+
+<td>{item.buyDate}</td>
+
+<td>{item.sellDate}</td>
 
 <td>{format(item.buyPrice)}</td>
 
