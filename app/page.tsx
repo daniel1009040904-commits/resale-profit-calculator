@@ -26,6 +26,23 @@ function format(n:number){
 return new Intl.NumberFormat("ko-KR").format(n)
 }
 
+function calculateDays(start:string,end:string){
+
+if(!start||!end) return ""
+
+const s=new Date(start)
+const e=new Date(end)
+
+const diff=e.getTime()-s.getTime()
+
+const days=Math.floor(diff/(1000*60*60*24))
+
+if(days<0) return ""
+
+return days+"일"
+
+}
+
 export default function Page(){
 
 const [memo,setMemo]=useState("")
@@ -132,6 +149,8 @@ buyDate,
 
 sellDate,
 
+days:calculateDays(buyDate,sellDate),
+
 ...r
 
 }
@@ -146,8 +165,9 @@ function downloadExcel(){
 
 const header=[
 "메모",
-"구입날짜",
+"구매날짜",
 "판매날짜",
+"보유기간",
 "구매가",
 "판매가",
 "총비용",
@@ -159,6 +179,7 @@ const rows=history.map(h=>[
 h.memo,
 h.buyDate,
 h.sellDate,
+h.days,
 h.buyPrice,
 h.sellPrice,
 h.totalCost,
@@ -190,6 +211,8 @@ return(
 
 <div className="card">
 
+<div className="liveBox">
+
 <label className="liveToggle">
 
 <input
@@ -198,9 +221,11 @@ checked={live}
 onChange={()=>setLive(!live)}
 />
 
-실시간 계산
+<span>실시간 계산</span>
 
 </label>
+
+</div>
 
 <input
 placeholder="상품 메모"
@@ -208,17 +233,25 @@ value={memo}
 onChange={e=>setMemo(e.target.value)}
 />
 
+<label className="dateLabel">구매 날짜</label>
+
 <input
 type="date"
 value={buyDate}
 onChange={e=>setBuyDate(e.target.value)}
 />
 
+<label className="dateLabel">판매 날짜</label>
+
 <input
 type="date"
 value={sellDate}
 onChange={e=>setSellDate(e.target.value)}
 />
+
+<p className="days">
+보유기간 : {calculateDays(buyDate,sellDate)}
+</p>
 
 <input
 placeholder="구매가"
@@ -307,8 +340,9 @@ onChange={e=>setEtc(addComma(e.target.value))}
 
 <tr>
 <th>메모</th>
-<th>구입날짜</th>
+<th>구매날짜</th>
 <th>판매날짜</th>
+<th>보유기간</th>
 <th>구매가</th>
 <th>판매가</th>
 <th>총비용</th>
@@ -328,6 +362,8 @@ onChange={e=>setEtc(addComma(e.target.value))}
 <td>{item.buyDate}</td>
 
 <td>{item.sellDate}</td>
+
+<td>{item.days}</td>
 
 <td>{format(item.buyPrice)}</td>
 
