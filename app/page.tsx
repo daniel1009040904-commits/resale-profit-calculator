@@ -3,7 +3,8 @@
 import Link from "next/link";
 import { Calculator, Truck, TrendingUp, Target, DollarSign } from "lucide-react";
 
-const tools = [
+// calculator list
+const calculators = [
   {
     title: "중고거래 순이익 계산기",
     desc: "판매가에서 수수료·택배비를 제외한 실제 남는 돈 계산",
@@ -90,7 +91,7 @@ export default function Page() {
         <h2 className="text-3xl font-black mb-10">계산기</h2>
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {tools.map((tool) => {
+          {calculators.map((tool) => {
             const Icon = tool.icon;
 
             return (
