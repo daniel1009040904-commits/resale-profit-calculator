@@ -11,11 +11,6 @@ margin:auto;
 padding:30px 20px;
 }
 
-h1{
-font-size:32px;
-margin-bottom:20px;
-}
-
 .card{
 background:#1e293b;
 padding:24px;
@@ -55,26 +50,15 @@ margin-top:10px;
 cursor:pointer;
 }
 
-.liveBox{
+.liveRow{
 display:flex;
-justify-content:flex-end;
-margin-bottom:10px;
-}
-
-.liveToggle{
-display:flex;
-gap:8px;
 align-items:center;
-}
-
-.dateLabel{
-font-size:14px;
-margin-bottom:4px;
-}
-
-.days{
+gap:8px;
 margin-bottom:10px;
-color:#94a3b8;
+}
+
+.liveCheck{
+width:auto;
 }
 
 .feeBox{
@@ -83,28 +67,12 @@ gap:10px;
 margin-bottom:12px;
 }
 
-.result p{
-font-size:18px;
-margin:6px 0;
-}
-
-table{
-width:100%;
-border-collapse:collapse;
-}
-
-th,td{
-padding:14px;
-border-bottom:1px solid #334155;
-text-align:left;
-color:white;
+.days{
+color:#94a3b8;
+margin-bottom:10px;
 }
 
 @media(max-width:600px){
-
-.page{
-padding:20px 14px;
-}
 
 input{
 font-size:18px;
@@ -116,21 +84,4 @@ font-size:20px;
 padding:20px;
 }
 
-.liveBox{
-  display:flex;
-  justify-content:flex-end;
-  margin-bottom:10px;
-}
-
-.liveToggle{
-  display:flex;
-  align-items:center;
-  gap:8px;
-  white-space:nowrap;
-}
-
-.liveToggle input{
-  width:auto;
-  margin:0;
-  padding:0;
 }

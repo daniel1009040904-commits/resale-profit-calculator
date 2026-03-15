@@ -58,10 +58,9 @@ const [platform,setPlatform]=useState("")
 
 const [feeType,setFeeType]=useState("percent")
 
-const [history,setHistory]=useState<any[]>([])
-
 const [live,setLive]=useState(true)
 
+const [history,setHistory]=useState<any[]>([])
 const [result,setResult]=useState<any>(null)
 
 useEffect(()=>{
@@ -132,27 +131,17 @@ function calculate(){
 const r=calculateCore()
 
 if(!r){
-
 alert("숫자가 아닌 값이 포함되었습니다")
-
 return
-
 }
 
 const item={
-
 id:Date.now(),
-
 memo,
-
 buyDate,
-
 sellDate,
-
 days:calculateDays(buyDate,sellDate),
-
 ...r
-
 }
 
 setHistory([item,...history])
@@ -196,9 +185,7 @@ const url=URL.createObjectURL(blob)
 const a=document.createElement("a")
 
 a.href=url
-
 a.download="수익기록-엑셀.csv"
-
 a.click()
 
 }
@@ -211,19 +198,16 @@ return(
 
 <div className="card">
 
-<div className="liveBox">
-
-<label className="liveToggle">
+<div className="liveRow">
 
 <input
 type="checkbox"
 checked={live}
 onChange={()=>setLive(!live)}
+className="liveCheck"
 />
 
 <span>실시간 계산</span>
-
-</label>
 
 </div>
 
@@ -233,16 +217,14 @@ value={memo}
 onChange={e=>setMemo(e.target.value)}
 />
 
-<label className="dateLabel">구매 날짜</label>
-
+<label>구매 날짜</label>
 <input
 type="date"
 value={buyDate}
 onChange={e=>setBuyDate(e.target.value)}
 />
 
-<label className="dateLabel">판매 날짜</label>
-
+<label>판매 날짜</label>
 <input
 type="date"
 value={sellDate}
@@ -310,9 +292,7 @@ onChange={e=>setEtc(addComma(e.target.value))}
 
 {result && (
 
-<div className="card result">
-
-<h2>계산 결과</h2>
+<div className="card">
 
 <p>순이익 : {format(result.profit)} 원</p>
 
@@ -329,58 +309,6 @@ onChange={e=>setEtc(addComma(e.target.value))}
 <button onClick={downloadExcel}>
 엑셀 다운로드
 </button>
-
-</div>
-
-<div className="card">
-
-<table>
-
-<thead>
-
-<tr>
-<th>메모</th>
-<th>구매날짜</th>
-<th>판매날짜</th>
-<th>보유기간</th>
-<th>구매가</th>
-<th>판매가</th>
-<th>총비용</th>
-<th>순이익</th>
-<th>수익률</th>
-</tr>
-
-</thead>
-
-<tbody>
-
-{history.map(item=>(
-<tr key={item.id}>
-
-<td>{item.memo}</td>
-
-<td>{item.buyDate}</td>
-
-<td>{item.sellDate}</td>
-
-<td>{item.days}</td>
-
-<td>{format(item.buyPrice)}</td>
-
-<td>{format(item.sellPrice)}</td>
-
-<td>{format(item.totalCost)}</td>
-
-<td>{format(item.profit)}</td>
-
-<td>{item.margin.toFixed(2)}%</td>
-
-</tr>
-))}
-
-</tbody>
-
-</table>
 
 </div>
 
