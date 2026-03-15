@@ -116,4 +116,21 @@ font-size:20px;
 padding:20px;
 }
 
+.liveBox{
+  display:flex;
+  justify-content:flex-end;
+  margin-bottom:10px;
+}
+
+.liveToggle{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  white-space:nowrap;
+}
+
+.liveToggle input{
+  width:auto;
+  margin:0;
+  padding:0;
 }
