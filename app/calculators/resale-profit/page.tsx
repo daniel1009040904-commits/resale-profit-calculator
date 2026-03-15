@@ -5,10 +5,18 @@ export default function Page(){
 
 const [buy,setBuy]=useState(0)
 const [sell,setSell]=useState(0)
+
 const [fee,setFee]=useState(0)
+const [feeType,setFeeType]=useState("won")
+
 const [shipping,setShipping]=useState(0)
 
-const profit = sell - buy - fee - shipping
+const feeValue =
+feeType === "percent"
+? sell*(fee/100)
+: fee
+
+const profit = sell - buy - feeValue - shipping
 
 const margin =
 sell
@@ -39,12 +47,26 @@ className="p-3 rounded bg-slate-800"
 onChange={e=>setSell(+e.target.value)}
 />
 
+<div className="flex gap-3">
+
 <input
 type="number"
 placeholder="수수료"
-className="p-3 rounded bg-slate-800"
+className="p-3 rounded bg-slate-800 flex-1"
 onChange={e=>setFee(+e.target.value)}
 />
+
+<select
+className="p-3 rounded bg-slate-800"
+onChange={e=>setFeeType(e.target.value)}
+>
+
+<option value="won">원</option>
+<option value="percent">%</option>
+
+</select>
+
+</div>
 
 <input
 type="number"
@@ -57,7 +79,7 @@ onChange={e=>setShipping(+e.target.value)}
 
 <div className="mt-10 text-2xl">
 
-순수익: <b>{profit}원</b>
+순수익: <b>{Math.round(profit)}원</b>
 
 <br/>
 
