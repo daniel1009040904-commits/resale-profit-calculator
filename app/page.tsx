@@ -1,32 +1,20 @@
 "use client";
 
 import Link from "next/link";
-import { TrendingUp, Target, DollarSign, Percent } from "lucide-react";
+import { DollarSign, Percent } from "lucide-react";
 
 const calculators = [
   {
     title: "중고거래 순수익 계산기",
-    desc: "판매가에서 비용을 제외한 실제 남는 돈 계산",
+    desc: "판매가에서 매입가, 수수료, 배송비를 제외한 실제 남는 돈 계산",
     href: "/calculators/resale-profit",
     icon: DollarSign,
-  },
-  {
-    title: "목표이익 판매가 계산기",
-    desc: "원하는 이익 기준 판매가 계산",
-    href: "/calculators/target-profit",
-    icon: Target,
   },
   {
     title: "마진율 계산기",
     desc: "판매가 대비 수익률 계산",
     href: "/calculators/margin-rate",
     icon: Percent,
-  },
-  {
-    title: "ROI 계산기",
-    desc: "투자 대비 수익률 계산",
-    href: "/calculators/roi",
-    icon: TrendingUp,
   },
 ];
 
@@ -43,7 +31,7 @@ export default function Page() {
         </h1>
 
         <p className="mt-6 text-slate-300 max-w-xl text-lg">
-          중고거래와 재판매에 필요한 계산기를 한 곳에 모은 서비스
+          중고거래에 필요한 수익 계산기를 모은 서비스
         </p>
 
       </section>
@@ -52,7 +40,7 @@ export default function Page() {
 
         <h2 className="text-3xl font-black mb-10">계산기</h2>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid md:grid-cols-2 gap-6">
 
           {calculators.map((tool)=>{
 
