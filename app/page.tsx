@@ -2,20 +2,31 @@
 
 import { useEffect, useState } from "react";
 
-function formatNumber(n: number) {
-  return new Intl.NumberFormat("ko-KR").format(n);
+function formatNumber(value: number) {
+  return new Intl.NumberFormat("ko-KR").format(value);
+}
+
+function removeComma(v: string) {
+  return v.replace(/,/g, "");
+}
+
+function addComma(v: string) {
+  const num = removeComma(v);
+  if (!num) return "";
+  return formatNumber(Number(num));
 }
 
 export default function Page() {
 
   const [memo,setMemo]=useState("")
+
   const [buy,setBuy]=useState("")
   const [sell,setSell]=useState("")
   const [shipping,setShipping]=useState("")
-  const [platform,setPlatform]=useState("")
   const [etc,setEtc]=useState("")
 
-  const [feeMode,setFeeMode]=useState<"percent"|"won">("percent")
+  const [feeType,setFeeType]=useState("percent")
+  const [platform,setPlatform]=useState("")
 
   const [history,setHistory]=useState<any[]>([])
 
@@ -32,14 +43,14 @@ export default function Page() {
 
   function calculate(){
 
-    const buyPrice=Number(buy||0)
-    const sellPrice=Number(sell||0)
-    const shippingFee=Number(shipping||0)
-    const etcCost=Number(etc||0)
+    const buyPrice=Number(removeComma(buy)||0)
+    const sellPrice=Number(removeComma(sell)||0)
+    const shippingFee=Number(removeComma(shipping)||0)
+    const etcCost=Number(removeComma(etc)||0)
 
-    let fee=Number(platform||0)
+    let fee=Number(removeComma(platform)||0)
 
-    if(feeMode==="percent"){
+    if(feeType==="percent"){
       fee=Math.floor((sellPrice*fee)/100)
     }
 
@@ -52,15 +63,13 @@ export default function Page() {
       memo,
       buyPrice,
       sellPrice,
-      shippingFee,
-      etcCost,
-      fee,
       totalCost,
       profit,
       margin
     }
 
     setHistory([item,...history])
+
   }
 
   function downloadExcel(){
@@ -79,9 +88,11 @@ export default function Page() {
     const csv=[header,...rows].map(r=>r.join(",")).join("\n")
 
     const blob=new Blob(["\ufeff"+csv],{type:"text/csv"})
+
     const url=URL.createObjectURL(blob)
 
     const a=document.createElement("a")
+
     a.href=url
     a.download="수익기록-엑셀.csv"
     a.click()
@@ -96,25 +107,60 @@ export default function Page() {
 
       <div className="card">
 
-        <input placeholder="메모" value={memo} onChange={e=>setMemo(e.target.value)}/>
+        <input
+        placeholder="상품 메모"
+        value={memo}
+        onChange={e=>setMemo(e.target.value)}
+        />
 
-        <input placeholder="구매가" value={buy} onChange={e=>setBuy(e.target.value)}/>
+        <input
+        placeholder="구매가"
+        value={buy}
+        onChange={e=>setBuy(addComma(e.target.value))}
+        />
 
-        <input placeholder="판매가" value={sell} onChange={e=>setSell(e.target.value)}/>
+        <input
+        placeholder="판매가"
+        value={sell}
+        onChange={e=>setSell(addComma(e.target.value))}
+        />
 
-        <input placeholder="택배비" value={shipping} onChange={e=>setShipping(e.target.value)}/>
+        <input
+        placeholder="택배비"
+        value={shipping}
+        onChange={e=>setShipping(addComma(e.target.value))}
+        />
 
-        <div>
+        <div className="feeBox">
 
-          <button onClick={()=>setFeeMode("percent")}>%</button>
+          <select
+          value={feeType}
+          onChange={e=>setFeeType(e.target.value)}
+          >
 
-          <button onClick={()=>setFeeMode("won")}>원</button>
+            <option value="percent">
+              수수료 %
+            </option>
+
+            <option value="won">
+              수수료 원
+            </option>
+
+          </select>
+
+          <input
+          placeholder="플랫폼 수수료"
+          value={platform}
+          onChange={e=>setPlatform(addComma(e.target.value))}
+          />
 
         </div>
 
-        <input placeholder="플랫폼 수수료" value={platform} onChange={e=>setPlatform(e.target.value)}/>
-
-        <input placeholder="기타 비용" value={etc} onChange={e=>setEtc(e.target.value)}/>
+        <input
+        placeholder="기타 비용"
+        value={etc}
+        onChange={e=>setEtc(addComma(e.target.value))}
+        />
 
         <button onClick={calculate}>
           계산하고 저장
