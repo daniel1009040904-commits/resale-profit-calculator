@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Calculator, TrendingUp, Target, DollarSign, Percent } from "lucide-react";
+import { TrendingUp, Target, DollarSign, Percent } from "lucide-react";
 
 const calculators = [
   {
@@ -21,12 +21,6 @@ const calculators = [
     desc: "판매가 대비 수익률 계산",
     href: "/calculators/margin-rate",
     icon: Percent,
-  },
-  {
-    title: "추천 판매가 계산기",
-    desc: "원가와 목표 마진율로 판매가 계산",
-    href: "/calculators/recommended-price",
-    icon: Calculator,
   },
   {
     title: "ROI 계산기",
@@ -61,9 +55,11 @@ export default function Page() {
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
 
           {calculators.map((tool)=>{
+
             const Icon = tool.icon
 
             return(
+
               <Link
                 key={tool.title}
                 href={tool.href}
@@ -81,7 +77,9 @@ export default function Page() {
                 </p>
 
               </Link>
+
             )
+
           })}
 
         </div>
