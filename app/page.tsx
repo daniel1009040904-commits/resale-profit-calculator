@@ -145,7 +145,6 @@ days:calculateDays(buyDate,sellDate),
 }
 
 setHistory([item,...history])
-
 setResult(r)
 
 }
@@ -260,13 +259,8 @@ value={feeType}
 onChange={e=>setFeeType(e.target.value)}
 >
 
-<option value="percent">
-수수료 %
-</option>
-
-<option value="won">
-수수료 원
-</option>
+<option value="percent">수수료 %</option>
+<option value="won">수수료 원</option>
 
 </select>
 
@@ -295,9 +289,7 @@ onChange={e=>setEtc(addComma(e.target.value))}
 <div className="card">
 
 <p>순이익 : {format(result.profit)} 원</p>
-
 <p>수익률 : {result.margin.toFixed(2)} %</p>
-
 <p>총비용 : {format(result.totalCost)} 원</p>
 
 </div>
