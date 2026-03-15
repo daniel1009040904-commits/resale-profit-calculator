@@ -1,12 +1,21 @@
 "use client";
+
 import { useState } from "react";
+
+export const metadata = {
+title: "중고거래 순수익 계산기 | Resell Profit Calculator",
+description:
+"판매가, 매입가, 수수료, 배송비를 입력하면 중고거래 순수익과 마진율을 계산할 수 있는 무료 계산기",
+}
 
 export default function Page(){
 
 const [buy,setBuy]=useState(0)
 const [sell,setSell]=useState(0)
+
 const [fee,setFee]=useState(0)
 const [feeType,setFeeType]=useState("won")
+
 const [shipping,setShipping]=useState(0)
 
 const feeValue =
@@ -121,6 +130,7 @@ onChange={e=>setShipping(+e.target.value)}
 마진율: <b>{margin}%</b>
 </p>
 
+
 <div className="flex gap-3 mt-6">
 
 <button
@@ -140,6 +150,32 @@ onClick={shareResult}
 </div>
 
 </div>
+
+
+<section className="mt-20 max-w-2xl text-slate-300">
+
+<h2 className="text-2xl font-bold mb-4">
+중고거래 순수익 계산 방법
+</h2>
+
+<p className="mb-3">
+중고거래에서 실제로 남는 돈을 계산하려면
+판매가에서 매입가, 수수료, 배송비를 모두 제외해야 합니다.
+</p>
+
+<p className="mb-3">
+이 계산기를 사용하면 중고거래 순수익과 마진율을
+쉽게 계산할 수 있습니다.
+</p>
+
+<p>
+번개장터, 중고나라, 당근마켓 등
+중고 거래 플랫폼에서 판매 수익을 계산할 때
+유용하게 사용할 수 있습니다.
+</p>
+
+</section>
+
 
 </main>
 
