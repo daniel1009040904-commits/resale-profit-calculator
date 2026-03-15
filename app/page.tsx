@@ -1,174 +1,112 @@
 "use client";
-import { useMemo, useState } from "react";
+import { useState } from "react";
 
 export default function Home() {
-  const [buy, setBuy] = useState("");
-  const [sell, setSell] = useState("");
-  const [shipping, setShipping] = useState("");
-  const [fee, setFee] = useState("");
 
-  const buyNum = Number(buy) || 0;
-  const sellNum = Number(sell) || 0;
-  const shippingNum = Number(shipping) || 0;
-  const feeNum = Number(fee) || 0;
+  const [buy,setBuy] = useState("")
+  const [sell,setSell] = useState("")
+  const [shipping,setShipping] = useState("")
+  const [fee,setFee] = useState("")
+  const [targetProfit,setTargetProfit] = useState("")
 
-  const totalCost = buyNum + shippingNum + feeNum;
-  const profit = sellNum - totalCost;
-  const rate = totalCost > 0 ? (profit / totalCost) * 100 : 0;
-  const breakEvenPrice = totalCost;
+  const buyNum = Number(buy) || 0
+  const sellNum = Number(sell) || 0
+  const shippingNum = Number(shipping) || 0
+  const feeNum = Number(fee) || 0
+  const targetNum = Number(targetProfit) || 0
 
-  const resultColor =
-    profit > 0 ? "#16a34a" : profit < 0 ? "#dc2626" : "#111827";
+  const totalCost = buyNum + shippingNum + feeNum
+  const profit = sellNum - totalCost
+  const rate = totalCost > 0 ? ((profit / totalCost) * 100).toFixed(1) : 0
 
-  const formatted = useMemo(() => {
-    const won = (num: number) => `${num.toLocaleString()}원`;
-    return {
-      totalCost: won(totalCost),
-      profit: won(profit),
-      breakEvenPrice: won(breakEvenPrice),
-      rate: `${rate.toFixed(1)}%`,
-    };
-  }, [totalCost, profit, breakEvenPrice, rate]);
+  const neededPrice = totalCost + targetNum
 
   return (
-    <main
-      style={{
-        minHeight: "100vh",
-        background: "#f3f4f6",
-        padding: "24px 16px",
-        fontFamily: "sans-serif",
-        color: "#111827",
-      }}
-    >
-      <div
-        style={{
-          maxWidth: 560,
-          margin: "0 auto",
-          background: "#ffffff",
-          borderRadius: 20,
-          padding: 24,
-          boxShadow: "0 10px 30px rgba(0,0,0,0.08)",
-        }}
-      >
-        <h1 style={{ fontSize: 30, fontWeight: 800, marginBottom: 8 }}>
-          중고거래 수익 계산기
-        </h1>
-        <p style={{ color: "#6b7280", marginBottom: 24 }}>
-          당근, 번개장터, 중고나라 판매 전에 순수익을 바로 계산해보세요.
-        </p>
 
-        <InputBox
-          label="구매가"
-          value={buy}
-          onChange={setBuy}
-          placeholder="예: 30000"
-        />
+<main style={{
+minHeight:"100vh",
+background:"#f3f4f6",
+padding:"24px",
+fontFamily:"sans-serif"
+}}>
 
-        <InputBox
-          label="판매가"
-          value={sell}
-          onChange={setSell}
-          placeholder="예: 50000"
-        />
+<div style={{
+maxWidth:500,
+margin:"0 auto",
+background:"#fff",
+padding:24,
+borderRadius:16
+}}>
 
-        <InputBox
-          label="배송비"
-          value={shipping}
-          onChange={setShipping}
-          placeholder="예: 3500"
-        />
+<h1 style={{fontSize:28,fontWeight:700}}>
+중고거래 수익 계산기
+</h1>
 
-        <InputBox
-          label="수수료 / 기타비용"
-          value={fee}
-          onChange={setFee}
-          placeholder="예: 2000"
-        />
+<p style={{color:"#666"}}>
+당근·번개장터 판매 전 수익 계산
+</p>
 
-        <div
-          style={{
-            marginTop: 28,
-            background: "#f9fafb",
-            border: "1px solid #e5e7eb",
-            borderRadius: 16,
-            padding: 20,
-          }}
-        >
-          <div style={{ marginBottom: 12, fontSize: 16 }}>
-            총비용: <b>{formatted.totalCost}</b>
-          </div>
+<br/>
 
-          <div
-            style={{
-              marginBottom: 12,
-              fontSize: 22,
-              fontWeight: 800,
-              color: resultColor,
-            }}
-          >
-            순수익: {profit > 0 ? "+" : ""}
-            {formatted.profit}
-          </div>
+<p>구매가</p>
+<input type="number"
+value={buy}
+onChange={(e)=>setBuy(e.target.value)}
+style={{width:"100%",padding:10}}/>
 
-          <div style={{ marginBottom: 12, fontSize: 16 }}>
-            수익률: <b>{formatted.rate}</b>
-          </div>
+<p>판매가</p>
+<input type="number"
+value={sell}
+onChange={(e)=>setSell(e.target.value)}
+style={{width:"100%",padding:10}}/>
 
-          <div style={{ fontSize: 16 }}>
-            손익분기 판매가: <b>{formatted.breakEvenPrice}</b>
-          </div>
-        </div>
-      </div>
-    </main>
-  );
-}
+<p>배송비</p>
+<input type="number"
+value={shipping}
+onChange={(e)=>setShipping(e.target.value)}
+style={{width:"100%",padding:10}}/>
 
-function InputBox({
-  label,
-  value,
-  onChange,
-  placeholder,
-}: {
-  label: string;
-  value: string;
-  onChange: (value: string) => void;
-  placeholder: string;
-}) {
-  const MAX = 10000000;
+<p>수수료 / 기타비용</p>
+<input type="number"
+value={fee}
+onChange={(e)=>setFee(e.target.value)}
+style={{width:"100%",padding:10}}/>
 
-  return (
-    <div style={{ marginBottom: 18 }}>
-      <label
-        style={{
-          display: "block",
-          marginBottom: 8,
-          fontSize: 15,
-          fontWeight: 700,
-        }}
-      >
-        {label}
-      </label>
+<p>목표 수익</p>
+<input type="number"
+value={targetProfit}
+onChange={(e)=>setTargetProfit(e.target.value)}
+style={{width:"100%",padding:10}}/>
 
-      <input
-        type="number"
-        value={value}
-        max={MAX}
-        placeholder={placeholder}
-        onChange={(e) => {
-          const num = Number(e.target.value);
-          if (num <= MAX) {
-            onChange(e.target.value);
-          }
-        }}
-        style={{
-          width: "100%",
-          padding: "14px 16px",
-          fontSize: 16,
-          borderRadius: 12,
-          border: "1px solid #d1d5db",
-          outline: "none",
-        }}
-      />
-    </div>
+<br/>
+
+<div style={{
+background:"#f9fafb",
+padding:20,
+borderRadius:12
+}}>
+
+<p>총비용 : <b>{totalCost.toLocaleString()}원</b></p>
+
+<p style={{
+fontSize:22,
+fontWeight:700
+}}>
+순수익 : {profit.toLocaleString()}원
+</p>
+
+<p>수익률 : {rate}%</p>
+
+<p>
+목표 수익을 내려면 판매가 :
+<b> {neededPrice.toLocaleString()}원</b>
+</p>
+
+</div>
+
+</div>
+
+</main>
+
   );
 }
